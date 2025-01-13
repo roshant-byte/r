@@ -1,0 +1,162 @@
+# Function to check if the brackets are balanced
+def is_balanced(expression):
+    # Create a stack to store opening brackets
+    stack = []
+    
+    # Dictionary to match closing brackets with their respective opening brackets
+    bracket_pairs = {
+        ')': '(',
+        '}': '{',
+        ']': '['
+    }
+    
+    # Loop through each character in the expression
+    for char in expression:
+        # If it's an opening bracket, push it onto the stack
+        if char in bracket_pairs.values():
+
+      
+            stack.append(char)
+        # If it's a closing bracket, check if it matches the top of the stack
+        elif char in bracket_pairs.keys():
+            # If stack is empty or top of stack is not the correct opening bracket
+            if not stack or stack[-1] != bracket_pairs[char]:
+                return False
+            # Pop the top element as the pair is balanced
+            stack.pop()
+    
+    # If the stack is empty, all brackets are balanced
+    return len(stack) == 0
+
+
+# Test cases
+if __name__ == "__main__":
+    test_cases = [
+        "([]{})",  # Balanced
+        "([)]",    # Not Balanced
+        "{[()()]}",# Balanced
+        "((()))",  # Balanced
+        "[({})]",  # Balanced
+        "{[(",     # Not Balanced
+    ]
+    
+    for expression in test_cases:
+        print(f"Expression: {expression} -> Balanced: {is_balanced(expression)}")
+
+---
+
+  # Class to implement Queue using Two Stacks
+class QueueUsingTwoStacks:
+    def __init__(self):
+        # Initialize two stacks
+        self.stack1 = []
+        self.stack2 = []
+    
+    # Function to enqueue (add element to the queue)
+    def enqueue(self, item):
+        # Push the item to stack1
+        self.stack1.append(item)
+    
+    # Function to dequeue (remove element from the queue)
+    def dequeue(self):
+        # If both stacks are empty, the queue is empty
+        if not self.stack1 and not self.stack2:
+            raise IndexError("dequeue from empty queue")
+        
+        # If stack2 is empty, move elements from stack1 to stack2
+        if not self.stack2:
+            while self.stack1:
+                self.stack2.append(self.stack1.pop())
+        
+        # Pop the element from stack2
+        return self.stack2.pop()
+
+    # Function to get the front element of the queue without dequeuing
+    def front(self):
+        if not self.stack1 and not self.stack2:
+            raise IndexError("front from empty queue")
+        
+        # If stack2 is empty, move elements from stack1 to stack2
+        if not self.stack2:
+            while self.stack1:
+                self.stack2.append(self.stack1.pop())
+        
+        # Return the top element of stack2 (front of the queue)
+        return self.stack2[-1]
+
+    # Function to check if the queue is empty
+    def is_empty(self):
+        return not self.stack1 and not self.stack2
+
+    # Function to get the size of the queue
+    def size(self):
+        return len(self.stack1) + len(self.stack2)
+
+
+# Test the QueueUsingTwoStacks class
+if __name__ == "__main__":
+    queue = QueueUsingTwoStacks()
+
+    # Enqueue elements
+    queue.enqueue(1)
+    queue.enqueue(2)
+    queue.enqueue(3)
+    print(f"Front element: {queue.front()}")  # Output: 1
+    print(f"Size of queue: {queue.size()}")   # Output: 3
+
+    # Dequeue elements
+    print(f"Dequeued element: {queue.dequeue()}")  # Output: 1
+    print(f"Dequeued element: {queue.dequeue()}")  # Output: 2
+
+    # Enqueue more elements
+    queue.enqueue(4)
+    queue.enqueue(5)
+    print(f"Front element: {queue.front()}")  # Output: 3
+    print(f"Size of queue: {queue.size()}")   # Output: 3
+
+    # Dequeue all remaining elements
+    print(f"Dequeued element: {queue.dequeue()}")  # Output: 3
+    print(f"Dequeued element: {queue.dequeue()}")  # Output: 4
+    print(f"Dequeued element: {queue.dequeue()}")  # Output: 5
+
+    # Check if the queue is empty
+    print(f"Is queue empty? {queue.is_empty()}")  # Output: True
+----
+
+  def twoStacks(x, a, b):
+    # Initialize two pointers for both stacks
+    i, j = 0, 0
+    current_sum = 0
+    max_operations = 0
+
+    # Iterate through the stacks while maintaining the sum less than or equal to x
+    while i < len(a) and current_sum + a[i] <= x:
+        current_sum += a[i]
+        i += 1
+
+    max_operations = i  # Store the maximum operations using only stack a
+
+    # Now try to add elements from stack b and keep the sum <= x
+    while j < len(b) and i >= 0:
+        current_sum += b[j]
+        j += 1
+        
+        # If the sum exceeds x, we pop from stack a to make the sum valid
+        while current_sum > x and i > 0:
+            i -= 1
+            current_sum -= a[i]
+        
+        if current_sum <= x:
+            max_operations = max(max_operations, i + j)
+
+    return max_operations
+
+
+# Example usage
+if __name__ == "__main__":
+    # Stack a and b, with total sum limit x
+    x = 10
+    a = [4, 2, 4, 6, 1]
+    b = [2, 3, 5, 1]
+
+    print(f"Maximum operations possible: {twoStacks(x, a, b)}")
